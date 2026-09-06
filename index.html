@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kucchu Pucchu EVM — Educational Simulation</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Global Header -->
+  <header class="global-header">
+    <div class="header-container">
+      <div class="title-group">
+        <h1 class="main-title">kucchu Pucchu EVM</h1>
+      </div>
+      <div class="header-actions">
+        <div class="creator-badge" title="Made by anuj_suryavanshii">
+          <span class="creator-badge-indicator"></span>
+          <div class="creator-text-group">
+            <span class="creator-prefix">Made by</span>
+            <span class="creator-name">anuj_suryavanshii</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Machine Stage -->
+  <main class="machine-stage" id="machineStage">
+    
+    <!-- Outer Physical Mounting Frame -->
+    <div class="machine-workbench" id="machineWorkbench">
+
+      <!-- LEFT SIDE: BALLOT UNIT -->
+      <section class="machine-unit ballot-unit" id="ballotUnit" aria-label="Ballot Unit">
+        <!-- Unit Header Plate -->
+        <div class="unit-chassis-top">
+          <div class="chassis-screw screw-tl"></div>
+          <div class="chassis-screw screw-tr"></div>
+          <div class="unit-brand-tag">
+            <span class="unit-tag-type">MODEL: KUCCHU PUCCHU BU-01</span>
+            <span class="unit-title">BALLOT UNIT</span>
+          </div>
+          <div class="unit-serial-stamp">SER NO: KP-BU-2026</div>
+        </div>
+
+        <!-- Ballot Sub-panel / Instruction Bar -->
+        <div class="ballot-instructions-bar" id="ballotInstructionBar">
+          <div class="ballot-status-icon-dot" id="ballotLiveDot"></div>
+          <span class="instruction-text" id="ballotPromptText">Waiting for the polling officer to enable voting</span>
+        </div>
+
+        <!-- Ballot Paper / Candidates List -->
+        <div class="ballot-candidates-panel" id="ballotCandidatesPanel">
+          
+          <!-- Column headers for realistic physical ballot faceplate -->
+          <div class="ballot-column-headers">
+            <div class="col-head col-num">NO.</div>
+            <div class="col-head col-candidate">CANDIDATE NAME</div>
+            <div class="col-head col-symbol">SYMBOL</div>
+            <div class="col-head col-braille">TACTILE</div>
+            <div class="col-head col-led">LAMP</div>
+            <div class="col-head col-vote">VOTE</div>
+          </div>
+
+          <!-- 8 Candidate Rows -->
+          <div class="candidates-list" id="candidatesList">
+            <!-- Rendered by JS / HTML template below -->
+          </div>
+
+        </div>
+
+        <!-- Unit Chassis Bottom / Corner Screws -->
+        <div class="unit-chassis-bottom">
+          <div class="chassis-screw screw-bl"></div>
+          <div class="chassis-screw screw-br"></div>
+          <div class="unit-bottom-label">BALLOT UNIT INTERFACE — ISOLATED DIRECT WIRE BUS</div>
+        </div>
+
+        <!-- X-Ray Internal Circuit Board Layer (Visible in X-Ray Mode) -->
+        <div class="xray-circuit-overlay bu-xray" id="buXrayOverlay">
+          <div class="pcb-header">BALLOT UNIT INTERNAL SCHEMATIC</div>
+          <div class="pcb-chip bu-mcu">
+            <span class="chip-label">BU-ENCODER MCU</span>
+            <span class="chip-sub">Key Matrix &amp; Debounce</span>
+          </div>
+          <div class="pcb-traces-canvas-container">
+            <canvas id="buPcbCanvas" class="pcb-canvas"></canvas>
+          </div>
+          <div class="pcb-terminal">CABLE BUS TERMINAL</div>
+        </div>
+      </section>
+
+      <!-- CENTER INTERCONNECT CABLE & VVPAT UNIT -->
+      <div class="interconnect-bay" id="interconnectBay">
+        
+        <!-- Heavy-duty Interconnect Cable -->
+        <div class="cable-assembly" id="cableAssembly">
+          <div class="cable-connector connector-bu">
+            <div class="connector-bracket"></div>
+            <div class="connector-pins"></div>
+          </div>
+          <div class="cable-sleeve">
+            <div class="cable-body" id="cableBody">
+              <span class="cable-label">SECURE INTERFACE CABLE (ISOLATED BUS)</span>
+              <!-- Animated signal packet travels here -->
+              <div class="cable-signal-packet" id="cableSignalPacket"></div>
+            </div>
+          </div>
+          <div class="cable-connector connector-cu">
+            <div class="connector-pins"></div>
+            <div class="connector-bracket"></div>
+          </div>
+        </div>
+
+        <!-- VVPAT-STYLE DEMO PANEL (Verification Window) -->
+        <div class="vvpat-unit" id="vvpatUnit" aria-label="VVPAT Verification Unit">
+          <div class="vvpat-chassis-top">
+            <span class="vvpat-title">VVPAT UNIT</span>
+            <span class="vvpat-sub">VISUAL VERIFICATION SLIP</span>
+          </div>
+
+          <!-- Acrylic Observation Window with Backlight -->
+          <div class="vvpat-viewport-frame" id="vvpatViewportFrame">
+            <div class="acrylic-reflection-glare"></div>
+            <div class="vvpat-interior-lamp" id="vvpatLamp"></div>
+            
+            <!-- Slip Slot -->
+            <div class="vvpat-slip-container" id="vvpatSlipContainer">
+              <!-- Slip paper element injected / animated here -->
+              <div class="vvpat-paper-slip" id="vvpatPaperSlip">
+                <div class="slip-header-rule">
+                  <div class="slip-title">VOTE RECORDED</div>
+                  <div class="slip-id" id="slipSerialNum">KP-0000</div>
+                </div>
+                <div class="slip-body">
+                  <div class="slip-photo-wrap">
+                    <img id="slipCandidatePhoto" class="slip-candidate-photo" src="" alt="Selected Candidate Photo" />
+                  </div>
+                  <div class="slip-candidate-meta">
+                    <span class="slip-candidate-label">CANDIDATE NAME:</span>
+                    <div class="slip-candidate-name" id="slipCandidateName">—</div>
+                  </div>
+                </div>
+                <div class="slip-footer">
+                  <div class="slip-timestamp" id="slipTimestamp">TIME: --:--:--</div>
+                  <div class="slip-watermark">VVPAT VERIFIED</div>
+                </div>
+                <div class="slip-tear-guide">----------------------------</div>
+              </div>
+            </div>
+
+            <!-- Idle Window Placeholder -->
+            <div class="vvpat-idle-message" id="vvpatIdleMsg">
+              <span>PRINTER IDLE</span>
+              <small>Waiting for next vote</small>
+            </div>
+          </div>
+
+          <!-- VVPAT Base / Sealed Compartment -->
+          <div class="vvpat-chassis-base">
+            <div class="vvpat-status-indicator">
+              <span class="vvpat-led" id="vvpatLed"></span>
+              <span class="vvpat-status-txt" id="vvpatStatusText">PRINTER READY</span>
+            </div>
+            <div class="vvpat-disclaimer">SECURE AUDIT TRAIL</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT SIDE: CONTROL UNIT -->
+      <section class="machine-unit control-unit" id="controlUnit" aria-label="Control Unit">
+        <!-- Unit Header Plate -->
+        <div class="unit-chassis-top">
+          <div class="chassis-screw screw-tl"></div>
+          <div class="chassis-screw screw-tr"></div>
+          <div class="unit-brand-tag">
+            <span class="unit-tag-type">MODEL: KUCCHU PUCCHU CU-01</span>
+            <span class="unit-title">CONTROL UNIT</span>
+          </div>
+          <div class="unit-serial-stamp">SER NO: KP-CU-2026</div>
+        </div>
+
+        <!-- Dark Inset Control Bay -->
+        <div class="cu-dark-panel">
+
+          <!-- SECTION 1: DIGITAL LCD-STYLE DISPLAY -->
+          <div class="cu-lcd-housing">
+            <div class="lcd-bezel-title">DIGITAL DISPLAY</div>
+            <div class="lcd-screen" id="lcdScreen">
+              <div class="lcd-scanlines"></div>
+              <div class="lcd-content">
+                <div class="lcd-line lcd-line-1" id="lcdStatusLine">STATUS: WAITING</div>
+                <div class="lcd-line lcd-line-2" id="lcdVotesLine">TOTAL VOTES: 0</div>
+              </div>
+            </div>
+            <div class="lcd-brand-sub">LOW-POWER CONTROLLER INTERFACE</div>
+          </div>
+
+          <!-- SECTION 2: STATUS LED BANK -->
+          <div class="cu-status-cluster">
+            <div class="status-cluster-title">SYSTEM STATUS</div>
+            <div class="led-bank">
+              
+              <!-- READY LED -->
+              <div class="led-group">
+                <div class="led-bezel">
+                  <div class="led-bulb led-ready" id="ledReady"></div>
+                </div>
+                <span class="led-name">READY</span>
+              </div>
+
+              <!-- VOTING LED -->
+              <div class="led-group">
+                <div class="led-bezel">
+                  <div class="led-bulb led-voting" id="ledVoting"></div>
+                </div>
+                <span class="led-name">VOTING</span>
+              </div>
+
+              <!-- LOCKED LED -->
+              <div class="led-group">
+                <div class="led-bezel">
+                  <div class="led-bulb led-locked active" id="ledLocked"></div>
+                </div>
+                <span class="led-name">LOCKED</span>
+              </div>
+
+              <!-- RESULT LED -->
+              <div class="led-group">
+                <div class="led-bezel">
+                  <div class="led-bulb led-result" id="ledResult"></div>
+                </div>
+                <span class="led-name">RESULT</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- SECTION 3: OPERATOR CONTROL BUTTONS -->
+          <div class="cu-controls-section">
+            
+            <!-- ENABLE NEXT VOTE (Ballot Button) -->
+            <div class="cu-action-row main-ballot-row">
+              <button id="btnEnableVote" class="cu-physical-btn btn-enable-vote" aria-label="Enable Next Vote">
+                <div class="btn-top-surface">
+                  <span class="btn-cap-label">ENABLE NEXT VOTE</span>
+                  <span class="btn-cap-sub">OPERATOR BALLOT KEY</span>
+                </div>
+              </button>
+            </div>
+
+            <!-- Operational Control Keys (Result & Reset) -->
+            <div class="cu-action-grid">
+              
+              <!-- SHOW RESULTS -->
+              <button id="btnShowResults" class="cu-physical-btn btn-show-results" aria-label="Show Results">
+                <div class="btn-top-surface">
+                  <span class="btn-cap-label">SHOW RESULTS</span>
+                  <span class="btn-cap-sub">TALLY AUDIT</span>
+                </div>
+              </button>
+
+              <!-- RESET DEMO -->
+              <button id="btnResetDemo" class="cu-physical-btn btn-reset-demo" aria-label="Reset">
+                <div class="btn-top-surface">
+                  <span class="btn-cap-label">RESET</span>
+                  <span class="btn-cap-sub">CLEAR REGISTERS</span>
+                </div>
+              </button>
+
+            </div>
+
+          </div>
+
+          <!-- Machine Status Footer Details -->
+          <div class="cu-meta-bay">
+            <div class="meta-item">
+              <span class="meta-lbl">CIRCUIT MODE:</span>
+              <span class="meta-val" id="circuitModeVal">OPERATIONAL</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-lbl">INTERNAL BATTERY:</span>
+              <span class="meta-val" style="color: #39ff14;">7.4V OK</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Unit Chassis Bottom -->
+        <div class="unit-chassis-bottom">
+          <div class="chassis-screw screw-bl"></div>
+          <div class="chassis-screw screw-br"></div>
+          <div class="unit-bottom-label">POLLING OFFICER CONSOLE — SUPERVISORY UNIT</div>
+        </div>
+
+        <!-- X-Ray Internal Circuit Board Layer for CU -->
+        <div class="xray-circuit-overlay cu-xray" id="cuXrayOverlay">
+          <div class="pcb-header">CONTROL UNIT INTERNAL SCHEMATIC</div>
+          <div class="pcb-chip cu-mcu">
+            <span class="chip-label">MAIN CONTROLLER MCU</span>
+            <span class="chip-sub">One-Time Latch Logic</span>
+          </div>
+          <div class="pcb-chip cu-memory" id="cuMemoryChip">
+            <span class="chip-label">STORAGE CELL</span>
+            <span class="chip-sub">Non-Volatile Registers</span>
+          </div>
+          <div class="pcb-chip cu-buzzer">
+            <span class="chip-label">PIEZO BUZZER</span>
+            <span class="chip-sub">Tone Transducer</span>
+          </div>
+          <div class="pcb-traces-canvas-container">
+            <canvas id="cuPcbCanvas" class="pcb-canvas"></canvas>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /machine-workbench -->
+
+  </main>
+
+  <!-- ================================================== -->
+  <!-- X-RAY EXPLORATION BAR (Shows when X-ray mode on)   -->
+  <!-- ================================================== -->
+  <div class="xray-inspector-panel hidden" id="xrayInspectorPanel">
+    <div class="xray-panel-header">
+      <span class="xray-panel-title">X-RAY DIAGNOSTIC MODE: INTERNAL HARDWARE EXPLANATION</span>
+      <button class="xray-close-btn" id="closeXrayBtn" aria-label="Close X-Ray Mode">CLOSE X-RAY</button>
+    </div>
+    <div class="xray-grid">
+      <div class="xray-card">
+        <h3>1. Direct Button Contact</h3>
+        <p>Pressing a candidate button closes a mechanical contact switch on the Ballot Unit. Hardware debouncing filters noise to prevent false or duplicate triggering.</p>
+      </div>
+      <div class="xray-card">
+        <h3>2. Isolated Cable Signal</h3>
+        <p>The Ballot Unit encodes the pressed candidate key index (1–8) and transmits a simple serialized digital packet across the isolated interconnect cable.</p>
+      </div>
+      <div class="xray-card">
+        <h3>3. Controller Verification &amp; Latch</h3>
+        <p>The Control Unit processor checks if the machine is currently in the <code>VOTING ENABLED</code> state. If valid, it increments the candidate's register in secure memory.</p>
+      </div>
+      <div class="xray-card">
+        <h3>4. Instant Hardware Lockout</h3>
+        <p>The controller immediately triggers the piezo confirmation tone, lights the selected candidate's LED, and locks the machine. Any subsequent button presses are ignored until the operator reactivates it.</p>
+      </div>
+    </div>
+    <div class="xray-footer-note">
+      * Conceptual visualization for educational purposes. Real voting systems utilize custom sealed microcontrollers with masked ROM and cryptographic verification.
+    </div>
+  </div>
+
+  <!-- ================================================== -->
+  <!-- EDUCATIONAL SECTION: HOW DOES THE EVM WORK?    -->
+  <!-- ================================================== -->
+  <section class="educational-section" id="howItWorksSection" aria-label="How Does The EVM Work">
+    <div class="section-container">
+      
+      <div class="section-title-wrap">
+        <h2 class="section-title">HOW DOES THE EVM WORK?</h2>
+        <p class="section-subtitle">Follow the operational cycle of electronic voting from authorization to lockout</p>
+      </div>
+
+      <!-- Animated Step Flow -->
+      <div class="workflow-stepper" id="workflowStepper">
+        
+        <!-- Step 1 -->
+        <div class="step-card" id="flowStep1" data-step="1">
+          <div class="step-badge">STEP 1</div>
+          <div class="step-icon-wrap">
+            <svg class="step-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <div class="step-title">Operator Enables Voting</div>
+          <div class="step-desc">The polling officer presses <strong>ENABLE NEXT VOTE</strong> on the Control Unit. The machine leaves the locked state and sets the READY status.</div>
+        </div>
+
+        <div class="step-connector">
+          <div class="arrow-line"></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-card" id="flowStep2" data-step="2">
+          <div class="step-badge">STEP 2</div>
+          <div class="step-icon-wrap">
+            <svg class="step-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <div class="step-title">One Voter Presses One Button</div>
+          <div class="step-desc">The voter enters the compartment and presses the blue rectangular button for their chosen candidate. All buttons are now active.</div>
+        </div>
+
+        <div class="step-connector">
+          <div class="arrow-line"></div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-card" id="flowStep3" data-step="3">
+          <div class="step-badge">STEP 3</div>
+          <div class="step-icon-wrap">
+            <svg class="step-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+            </svg>
+          </div>
+          <div class="step-title">Selection Recorded</div>
+          <div class="step-desc">The candidate vote is registered in secure memory. The total vote counter increases by one.</div>
+        </div>
+
+        <div class="step-connector">
+          <div class="arrow-line"></div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-card" id="flowStep4" data-step="4">
+          <div class="step-badge">STEP 4</div>
+          <div class="step-icon-wrap">
+            <svg class="step-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+          </div>
+          <div class="step-title">Confirmation Displayed</div>
+          <div class="step-desc">A short confirmation beep sounds, the candidate's red LED lights up, and the VVPAT paper slip verifies the selection.</div>
+        </div>
+
+        <div class="step-connector">
+          <div class="arrow-line"></div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step-card" id="flowStep5" data-step="5">
+          <div class="step-badge">STEP 5</div>
+          <div class="step-icon-wrap">
+            <svg class="step-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              <circle cx="12" cy="16" r="1"></circle>
+            </svg>
+          </div>
+          <div class="step-title">Machine Locks</div>
+          <div class="step-desc">All candidate buttons are immediately disabled. Pressing other buttons has zero effect. Duplicate voting is impossible.</div>
+        </div>
+
+        <div class="step-connector">
+          <div class="arrow-line"></div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="step-card" id="flowStep6" data-step="6">
+          <div class="step-badge">STEP 6</div>
+          <div class="step-icon-wrap">
+            <svg class="step-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+          </div>
+          <div class="step-title">Operator Enables Next Vote</div>
+          <div class="step-desc">The next registered voter is authenticated in the queue before the officer pushes the button to begin the cycle anew.</div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================================================== -->
+  <!-- EDUCATIONAL SECTION: WHAT HAPPENS INSIDE?          -->
+  <!-- ================================================== -->
+  <section class="educational-section inside-section" id="insideSection" aria-label="What Happens Inside">
+    <div class="section-container">
+      
+      <div class="section-title-wrap">
+        <h2 class="section-title">WHAT HAPPENS INSIDE?</h2>
+        <p class="section-subtitle">Real-time educational diagram of signal propagation and internal latching</p>
+      </div>
+
+      <!-- Animated Educational Signal Diagram -->
+      <div class="inside-pipeline-wrapper">
+        <div class="pipeline-track">
+          
+          <!-- Node 1 -->
+          <div class="pipe-node" id="pipeNodeBtn">
+            <div class="pipe-node-box">
+              <div class="pipe-node-title">VOTE BUTTON</div>
+              <div class="pipe-node-sub">Tactile Switch Closure</div>
+            </div>
+            <div class="pipe-annotation">Mechanical contact made</div>
+          </div>
+
+          <div class="pipe-arrow">
+            <div class="pipe-pulse-dot" id="pulseDot1"></div>
+            <span class="pipe-arrow-text">SIGNAL</span>
+          </div>
+
+          <!-- Node 2 -->
+          <div class="pipe-node" id="pipeNodeSignal">
+            <div class="pipe-node-box">
+              <div class="pipe-node-title">INPUT SIGNAL</div>
+              <div class="pipe-node-sub">Debounce &amp; Encode</div>
+            </div>
+            <div class="pipe-annotation">Binary candidate index</div>
+          </div>
+
+          <div class="pipe-arrow">
+            <div class="pipe-pulse-dot" id="pulseDot2"></div>
+            <span class="pipe-arrow-text">BUS TRANSIT</span>
+          </div>
+
+          <!-- Node 3 -->
+          <div class="pipe-node" id="pipeNodeLogic">
+            <div class="pipe-node-box">
+              <div class="pipe-node-title">CONTROLLER LOGIC</div>
+              <div class="pipe-node-sub">State Latch Verification</div>
+            </div>
+            <div class="pipe-annotation">Check if vote is enabled</div>
+          </div>
+
+          <div class="pipe-arrow">
+            <div class="pipe-pulse-dot" id="pulseDot3"></div>
+            <span class="pipe-arrow-text">COMMIT</span>
+          </div>
+
+          <!-- Node 4 -->
+          <div class="pipe-node" id="pipeNodeStorage">
+            <div class="pipe-node-box">
+              <div class="pipe-node-title">VOTE STORAGE</div>
+              <div class="pipe-node-sub">Atomic Increment (Tally)</div>
+            </div>
+            <div class="pipe-annotation">Candidate count += 1</div>
+          </div>
+
+          <div class="pipe-arrow">
+            <div class="pipe-pulse-dot" id="pulseDot4"></div>
+            <span class="pipe-arrow-text">FEEDBACK</span>
+          </div>
+
+          <!-- Node 5 -->
+          <div class="pipe-node" id="pipeNodeConfirm">
+            <div class="pipe-node-box">
+              <div class="pipe-node-title">CONFIRMATION</div>
+              <div class="pipe-node-sub">LED + Audio Beep + VVPAT</div>
+            </div>
+            <div class="pipe-annotation">Multi-sensory feedback</div>
+          </div>
+
+          <div class="pipe-arrow">
+            <div class="pipe-pulse-dot" id="pulseDot5"></div>
+            <span class="pipe-arrow-text">INHIBIT</span>
+          </div>
+
+          <!-- Node 6 -->
+          <div class="pipe-node" id="pipeNodeLock">
+            <div class="pipe-node-box">
+              <div class="pipe-node-title">MACHINE LOCKS</div>
+              <div class="pipe-node-sub">Hardware Latch Closed</div>
+            </div>
+            <div class="pipe-annotation">Ready LED turns OFF</div>
+          </div>
+
+        </div>
+
+        <div class="pipeline-interactive-actions">
+          <button id="btnSimulatePulse" class="secondary-interactive-btn">
+            RUN EDUCATIONAL SIGNAL SIMULATION
+          </button>
+          <span class="pipeline-hint">Or click any candidate vote button on the machine to see real-time flow!</span>
+        </div>
+
+        <!-- ================================================== -->
+        <!-- 4 COLUMNS: CANDIDATE-WISE CUSTOM VOTE RINGTONES    -->
+        <!-- ================================================== -->
+        <div class="custom-ringtone-panel" id="customRingtonePanel">
+          <div class="ringtone-card">
+            
+            <div class="ringtone-card-header">
+              <div class="ringtone-header-title">
+                <svg class="ringtone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18V5l12-2v13"></path>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+                <span>CANDIDATE-WISE CUSTOM VOTE RINGTONE MANAGER (4 PARTIES)</span>
+              </div>
+              <div class="ringtone-status-badge" id="ringtoneGlobalBadge">4 CHANNELS CONFIGURED</div>
+            </div>
+
+            <div class="ringtone-card-body">
+              <p class="ringtone-instruction">
+                Set individual custom audio tones for each party. When a voter presses a candidate's vote button, their specific assigned ringtone will play!
+              </p>
+
+              <!-- 4 Separate Columns Grid -->
+              <div class="ringtone-columns-grid">
+
+                <!-- Column 1: BJP (Modi Ji) -->
+                <div class="cand-sound-col party-bjp-border" id="soundCol1" data-cand-id="1">
+                  <div class="cand-sound-col-header party-bjp-header">
+                    <div class="cand-sound-thumb">
+                      <img src="assets/bjp.webp" alt="BJP" />
+                    </div>
+                    <div class="cand-sound-title-wrap">
+                      <span class="cand-sound-num">01. BJP</span>
+                      <span class="cand-sound-leader">Modi Ji</span>
+                    </div>
+                    <div class="cand-sound-badge" id="soundBadge1">DEFAULT</div>
+                  </div>
+                  <div class="cand-sound-col-body">
+                    <label for="audioPicker1" class="cand-sound-upload-label" id="pickerLabel1" title="Upload custom audio for BJP (Modi Ji)">
+                      <input type="file" id="audioPicker1" data-cand-id="1" accept="audio/*" class="hidden-file-input" />
+                      <svg class="col-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      <span class="col-upload-text" id="uploadText1">Choose Sound File</span>
+                    </label>
+                    <div class="cand-sound-actions">
+                      <button class="cand-sound-btn btn-test-cand" id="btnTestSound1" data-cand-id="1" title="Test BJP sound">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-icon">
+                          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <span>TEST</span>
+                      </button>
+                      <button class="cand-sound-btn btn-reset-cand hidden" id="btnResetSound1" data-cand-id="1" title="Restore default beep">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-icon">
+                          <polyline points="1 4 1 10 7 10"></polyline>
+                          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                        <span>RESET</span>
+                      </button>
+                    </div>
+                    <div class="cand-sound-meta" id="soundMeta1">
+                      <span class="meta-dot active-default" id="metaDot1"></span>
+                      <span class="meta-desc" id="metaDesc1" title="Factory Beep (1320 Hz)">Factory Beep</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Column 2: Congress (Rahul Gandhi) -->
+                <div class="cand-sound-col party-cong-border" id="soundCol2" data-cand-id="2">
+                  <div class="cand-sound-col-header party-cong-header">
+                    <div class="cand-sound-thumb">
+                      <img src="assets/congress.webp" alt="Congress" />
+                    </div>
+                    <div class="cand-sound-title-wrap">
+                      <span class="cand-sound-num">02. Congress</span>
+                      <span class="cand-sound-leader">Rahul Gandhi</span>
+                    </div>
+                    <div class="cand-sound-badge" id="soundBadge2">DEFAULT</div>
+                  </div>
+                  <div class="cand-sound-col-body">
+                    <label for="audioPicker2" class="cand-sound-upload-label" id="pickerLabel2" title="Upload custom audio for Congress (Rahul Gandhi)">
+                      <input type="file" id="audioPicker2" data-cand-id="2" accept="audio/*" class="hidden-file-input" />
+                      <svg class="col-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      <span class="col-upload-text" id="uploadText2">Choose Sound File</span>
+                    </label>
+                    <div class="cand-sound-actions">
+                      <button class="cand-sound-btn btn-test-cand" id="btnTestSound2" data-cand-id="2" title="Test Congress sound">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-icon">
+                          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <span>TEST</span>
+                      </button>
+                      <button class="cand-sound-btn btn-reset-cand hidden" id="btnResetSound2" data-cand-id="2" title="Restore default beep">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-icon">
+                          <polyline points="1 4 1 10 7 10"></polyline>
+                          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                        <span>RESET</span>
+                      </button>
+                    </div>
+                    <div class="cand-sound-meta" id="soundMeta2">
+                      <span class="meta-dot active-default" id="metaDot2"></span>
+                      <span class="meta-desc" id="metaDesc2" title="Factory Beep (1320 Hz)">Factory Beep</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Column 3: Aam Aadmi Party (Kejuu) -->
+                <div class="cand-sound-col party-aap-border" id="soundCol3" data-cand-id="3">
+                  <div class="cand-sound-col-header party-aap-header">
+                    <div class="cand-sound-thumb">
+                      <img src="assets/aap.webp" alt="Aam Aadmi Party" />
+                    </div>
+                    <div class="cand-sound-title-wrap">
+                      <span class="cand-sound-num">03. AAP</span>
+                      <span class="cand-sound-leader">Kejuu</span>
+                    </div>
+                    <div class="cand-sound-badge" id="soundBadge3">DEFAULT</div>
+                  </div>
+                  <div class="cand-sound-col-body">
+                    <label for="audioPicker3" class="cand-sound-upload-label" id="pickerLabel3" title="Upload custom audio for Aam Aadmi Party (Kejuu)">
+                      <input type="file" id="audioPicker3" data-cand-id="3" accept="audio/*" class="hidden-file-input" />
+                      <svg class="col-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      <span class="col-upload-text" id="uploadText3">Choose Sound File</span>
+                    </label>
+                    <div class="cand-sound-actions">
+                      <button class="cand-sound-btn btn-test-cand" id="btnTestSound3" data-cand-id="3" title="Test AAP sound">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-icon">
+                          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <span>TEST</span>
+                      </button>
+                      <button class="cand-sound-btn btn-reset-cand hidden" id="btnResetSound3" data-cand-id="3" title="Restore default beep">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-icon">
+                          <polyline points="1 4 1 10 7 10"></polyline>
+                          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                        <span>RESET</span>
+                      </button>
+                    </div>
+                    <div class="cand-sound-meta" id="soundMeta3">
+                      <span class="meta-dot active-default" id="metaDot3"></span>
+                      <span class="meta-desc" id="metaDesc3" title="Factory Beep (1320 Hz)">Factory Beep</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Column 4: Cockroach janta Party (Abhijeet) -->
+                <div class="cand-sound-col party-cjp-border" id="soundCol4" data-cand-id="4">
+                  <div class="cand-sound-col-header party-cjp-header">
+                    <div class="cand-sound-thumb">
+                      <img src="assets/cjp.jpg" alt="Cockroach janta Party" />
+                    </div>
+                    <div class="cand-sound-title-wrap">
+                      <span class="cand-sound-num">04. CJP</span>
+                      <span class="cand-sound-leader">Abhijeet</span>
+                    </div>
+                    <div class="cand-sound-badge" id="soundBadge4">DEFAULT</div>
+                  </div>
+                  <div class="cand-sound-col-body">
+                    <label for="audioPicker4" class="cand-sound-upload-label" id="pickerLabel4" title="Upload custom audio for Cockroach janta Party (Abhijeet)">
+                      <input type="file" id="audioPicker4" data-cand-id="4" accept="audio/*" class="hidden-file-input" />
+                      <svg class="col-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      <span class="col-upload-text" id="uploadText4">Choose Sound File</span>
+                    </label>
+                    <div class="cand-sound-actions">
+                      <button class="cand-sound-btn btn-test-cand" id="btnTestSound4" data-cand-id="4" title="Test CJP sound">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-icon">
+                          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <span>TEST</span>
+                      </button>
+                      <button class="cand-sound-btn btn-reset-cand hidden" id="btnResetSound4" data-cand-id="4" title="Restore default beep">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-icon">
+                          <polyline points="1 4 1 10 7 10"></polyline>
+                          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                        <span>RESET</span>
+                      </button>
+                    </div>
+                    <div class="cand-sound-meta" id="soundMeta4">
+                      <span class="meta-dot active-default" id="metaDot4"></span>
+                      <span class="meta-desc" id="metaDesc4" title="Factory Beep (1320 Hz)">Factory Beep</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- /ringtone-columns-grid -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================================================== -->
+  <!-- RESULT MODE MODAL                                  -->
+  <!-- ================================================== -->
+  <div class="modal-backdrop hidden" id="resultsModal" role="dialog" aria-modal="true" aria-labelledby="resultsTitle">
+    <div class="modal-dialog results-dialog">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h2 class="modal-title" id="resultsTitle">ELECTION RESULTS</h2>
+          <div class="modal-disclaimer-tag">AUDIT TALLY SUMMARY</div>
+        </div>
+        <button class="modal-close-icon" id="btnCloseResults" aria-label="Close Results">&times;</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        
+        <!-- Summary Stats Card -->
+        <div class="results-summary-card">
+          <div class="summary-metric">
+            <span class="metric-label">TOTAL VOTES CAST:</span>
+            <span class="metric-value" id="resultTotalVotes">0</span>
+          </div>
+          <div class="summary-metric">
+            <span class="metric-label">LEADING CANDIDATE:</span>
+            <span class="metric-value" id="resultLeadingCandidate">—</span>
+          </div>
+          <div class="summary-metric">
+            <span class="metric-label">SESSION STATUS:</span>
+            <span class="metric-value">AUDIT READY</span>
+          </div>
+        </div>
+
+        <!-- Horizontal Bar Chart Section -->
+        <div class="chart-section">
+          <div class="chart-section-title">VOTE DISTRIBUTION (HORIZONTAL BAR CHART)</div>
+          <div class="chart-bars-container" id="chartBarsContainer">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Detailed Candidates Table -->
+        <div class="table-section">
+          <div class="chart-section-title">DETAILED CANDIDATE TALLY</div>
+          <div class="results-table-wrap">
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>NO.</th>
+                  <th>CANDIDATE NAME</th>
+                  <th>SYMBOL</th>
+                  <th>VOTES</th>
+                  <th>PERCENTAGE</th>
+                </tr>
+              </thead>
+              <tbody id="resultsTableBody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Educational Audit Log -->
+        <div class="audit-trail-section">
+          <div class="audit-title">AUDIT LOG (TIMESTAMPED CAST EVENTS)</div>
+          <div class="audit-log-container" id="auditLogContainer">
+            <div class="empty-audit">No votes have been cast yet in this session.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button id="btnBackToControlUnit" class="cu-physical-btn btn-modal-primary">
+          <div class="btn-top-surface">
+            <span class="btn-cap-label">BACK TO CONTROL UNIT</span>
+          </div>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================================================== -->
+  <!-- RESET CONFIRMATION MODAL                           -->
+  <!-- ================================================== -->
+  <div class="modal-backdrop hidden" id="resetModal" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle">
+    <div class="modal-dialog reset-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title" id="resetModalTitle">RESET REGISTERS</h2>
+        <button class="modal-close-icon" id="btnCloseResetModal" aria-label="Cancel">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="reset-prompt-box">
+          <div class="reset-alert-icon">!</div>
+          <div class="reset-prompt-text">
+            <p class="reset-primary-msg">Reset all votes?</p>
+            <p class="reset-secondary-msg">This will clear all candidate totals, reset the total vote count to 0, and return the machine to the WAITING status.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer reset-footer">
+        <button id="btnCancelReset" class="cu-physical-btn btn-modal-secondary">
+          <div class="btn-top-surface">
+            <span class="btn-cap-label">CANCEL</span>
+          </div>
+        </button>
+        <button id="btnConfirmReset" class="cu-physical-btn btn-modal-danger">
+          <div class="btn-top-surface">
+            <span class="btn-cap-label">RESET</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Educational Footer -->
+  <footer class="global-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">kucchu Pucchu EVM</div>
+      <div class="footer-text">Strictly an educational simulation created to explain the basic conceptual voting sequence and controller logic. Not affiliated with any official election commission or commercial system.</div>
+      <div class="footer-copy">&copy; 2026 Educational Science &amp; Technology Exhibition</div>
+    </div>
+  </footer>
+
+  <script src="app.js?v=7"></script>
+</body>
+</html>
